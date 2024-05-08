@@ -103,10 +103,7 @@ template = '''
         {errors}
         <br>
         <br>
-        <br>
-        <br>
-        
-        <h3>{company} {year}</h3>
+        <h2>{company} {year}</h2>
         <br> 
         <div><div>{insights}</div></div>
     </body>

@@ -138,7 +138,7 @@ class Form10KLoader():
         # check if already loaded
         if not self.is_loaded(ticker, year):
             # loads otherwise
-            self.load(ticker, year)
+            self.load(ticker, year + 1)
         
         # get last 2 digit of year, offset by 1 for filing year (1 year after covered)
         short_year = str(year + 1)[-2:] 
