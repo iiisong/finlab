@@ -1,15 +1,17 @@
 # Form 10K Guru
 
-## Technical Details
+## Submission Information
+Apologies for the late submission. Had 4 finals, move-out, and 24hr worth of flight travel within the past 12 days starting the day this assignment was released.
 
+## Technical Details
 
 ### Technical Summary
 #### Techstack (All Python)
 - sec_edgar_downloader
 - BeautifulSoup
 - Google Gemini 1.1.0 Pro API
-- Flask
-- AWS Beanstalk
+- Flask (currently can run locally with Flask `python src/application.py`)
+- AWS Beanstalk (in progress, use local run above in meantime)
 - (no frontend framework)
 
 ### Insights

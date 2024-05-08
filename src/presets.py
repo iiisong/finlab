@@ -101,8 +101,7 @@ template = '''
             <input type="submit" name="select_filing" value="Run">
         </form>
         {errors}
-        <br>
-        <br>
+        <hr>
         <h2>{company} {year}</h2>
         <br> 
         <div><div>{insights}</div></div>
