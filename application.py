@@ -53,8 +53,12 @@ def main_page():
             form = Form10KText(form_path)
             guru = Form10KGuru(form)
             
-            insights_list = asyncio.run(guru.get_insights())
-            
+            try:
+                insights_list = asyncio.run(guru.get_insights())
+            except Exception as e:
+                error = f"<p>Gemini Error. Please wait around 2 minute for another request.<\p><p>{str(e)}<\p>"
+                return template.format(company="", year="", errors=error, insights="")
+                
             insights = '</div><br><div>'.join(insights_list)
             
             return template.format(company=ticker, year=year, errors=errors, insights=insights)
