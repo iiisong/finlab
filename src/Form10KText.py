@@ -2,9 +2,9 @@ import bs4 # for typing-use
 from bs4 import BeautifulSoup
 import re
 
-from constants import ascii_replace_dict, id_to_section_label, id_to_section_title, id_to_section_alts
+from presets import ascii_replace_dict, id_to_section_label, id_to_section_title, id_to_section_alts
 
-class Form10k():
+class Form10KText():
     '''
     Class used to extract text from SEC Form 10-K. 
     
@@ -14,7 +14,7 @@ class Form10k():
         text            - raw text content
         sections_ids    - list of section id's
         company         - company name
-        year            - year (form for preceding year)
+        year            - year covered (form filed following year)
         ein             - employer identification number (IRS)
         address         - address
         phone_number    - phone number
@@ -146,6 +146,8 @@ class Form10k():
         # check for non-linked name case
         if anchor_tag.name == 'tr':
             anchor_tag = anchor_tag.find('a')
+            if anchor_tag is None:
+                return None
             
         # anchor id of the label (ex. sD0F7ECFEC8965FDE8B546D17642E8FED)
         anchor_id = anchor_tag['href'][1:]
@@ -153,7 +155,7 @@ class Form10k():
         # destination anchor of label (where link points to in table of contents)
         src_dest = self._soup.find('a', attrs={'name': anchor_id})
         if src_dest == None:
-            src_dest = self._soup.find('a', id=anchor_id)
+            src_dest = self._soup.find(id=anchor_id)
         
         return src_dest
 
@@ -163,7 +165,7 @@ class Form10k():
         Creates and return lookup dict between label_id and integer index of location in the html string
         
         ### Arguments:
-            label_list: list[str], optional
+            label_list : list[str], optional
                 list of label_id to generate index from, default to section labels of 10-K form
             
         ### Returns:
@@ -173,8 +175,8 @@ class Form10k():
         # create id-to-tag lookup dict
         id_to_tag = {label: self.get_label_tag(label) for label in label_list}
         
-        # create id-to-index lookup dict
-        id_to_index = {id: self.html.find(str(tag)) for id, tag in id_to_tag.items()}
+        # create id-to-index lookup dict (-1 if not found)
+        id_to_index = {id: self.html.find(str(tag)) if tag is not None else -1 for id, tag in id_to_tag.items()}
         
         return id_to_index
         
@@ -300,7 +302,7 @@ class Form10k():
             id_index = self._html_indices
             
         # processed text of entire file
-        result_text = ''
+        result_text = ""
             
         # dict of section labels id's to index in result_text
         text_indices = {}
@@ -309,18 +311,28 @@ class Form10k():
         for i in range(len(self.section_ids) - 1):
             id = self.section_ids[i]
             
+            # skip if section not exist (-1)
+            if id == -1:
+                continue
+            
             # set index location of each id
             text_indices[id] = len(result_text)
             
+            # get next existing section
+            next_i = -1
+            for j in range(i + 1, len(self.section_ids) - 1):
+                # dont need to check for all non-exist bc 'end' always at back
+                if self._html_indices[self.section_ids[j]] != -1:
+                    next_i = j
+                    break
+            
             # append section text to result_text
-            result_text += self.get_raw_text(self.extract_subhtml(id, self.section_ids[i + 1]))
+            result_text += self.get_raw_text(self.extract_subhtml(id, self.section_ids[next_i]))
             
         # set index location / length of end
         text_indices['end'] = len(result_text)
         
         return result_text, text_indices
-    
-    
     
     def get_section(self, label_id: str) -> str:
         '''
@@ -345,7 +357,7 @@ class Form10k():
             company : str
                 company ticker
             year : int
-                year filed (form information for preciding year)
+                year covered (form filed following year)
             ein : str
                 employer identification number (IRS)
             address : str
@@ -356,7 +368,7 @@ class Form10k():
         intro = self.get_section('intro')
         
         company = re.search(r'\n(.*)\n(?i)\(Exact name of Registrant as specified in its charter\)', intro)[1].strip()
-        year = int(re.search(r'(?i)For the fiscal year ended \w+ \d+, (\d{4})', intro)[1].strip()) + 1
+        year = int(re.search(r'(?i)For the fiscal year ended \w+ \d+, (\d{4})', intro)[1].strip())
         ein = re.search(r'(?i)(\d{2}-\d{7})\n.+I.R.S. Employer', intro)[1].strip()
         phone_number = re.search(r'(?i)\n(.+)\n.+telephone number', intro)[1].strip()
         address = re.search(r'(?i)\n(.+)\n.+address', intro)[1].strip()
@@ -375,18 +387,19 @@ class Form10k():
         boxes = [c for c in intro if c in ['☒', '☐']]
         return [b == '☒' for b in boxes]
     
-    def printInfo(self) -> None:
+    def print_info(self) -> None:
         '''Prints info about the form object'''
-        print(
-            f'''
-            Annual SEC Form-10K for {self.company} from {self.year} covering the overall financial performance over {self.year - 1}.
-            
-            Attributes:
-                Company Name                                        {self.company}
-                Year (filing for preceding year)                    {self.year}
-                Employer Identification Number (IRS)                {self.ein}
-                Address                                             {self.address}
-                Phone Number                                        {self.phone_number}
-                File Path                                           {self.filepath}
-                Size (in characters)                                {self.size}
-              ''')
+        # python prints are dumb
+        print(f'''
+Annual SEC Form-10K for {self.company} from {self.year} covering the overall financial performance over {self.year}. Form filed in {self.year + 1}.
+
+Attributes:
+    Company Name                                        {self.company}
+    Year (filed in following year)                      {self.year}
+    Employer Identification Number (IRS)                {self.ein}
+    Address                                             {self.address}
+    Phone Number                                        {self.phone_number}
+    File Path                                           {self.filepath}
+    Size (in characters)                                {self.size}
+    ''')
+        

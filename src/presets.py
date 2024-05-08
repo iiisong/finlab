@@ -1,7 +1,21 @@
 '''
-File to store constants
+File to store preset values
 '''
 
+'''Loader Values'''
+# list of tickers to load at launch (demo or other reasons)
+    #  (ticker, year),  load all years if year is None
+    #     ticker : str
+    #         ticker symbol
+    #     year : int, optional
+    #         year covered (filed 1 year after), all year if optional
+preload_list = [('META', None), 
+           ('AAPL', 2017), 
+           ('LUMN', 2022), 
+           ('GWW', 2014)]
+
+
+'''Parser Values'''
 
 # str-to-str dictionary of with target, replacement as key-value pair respectively
 ascii_replace_dict = {
@@ -32,6 +46,7 @@ id_to_section_label = {
     'i15': "Item 15.",
 }
 
+# dict mapping of item id to section title of 10-k form
 id_to_section_title = {
     'p1': "Part I",
     'i1': "Business",
@@ -59,8 +74,44 @@ id_to_section_title = {
     'i15': "Exhibits, Financial Statement Schedules",
 }
 
+# dict mapping of item id to alternate titles or representations  of 10-k form
 id_to_section_alts = {
     'i15': ["Exhibits and Financial Statement Schedules"],
 }
 
+# order of which sections appear in
 id_order = ['p1', 'i1', 'i1a', 'i1b', 'i2', 'i3', 'i4', 'p2', 'i5', 'i6', 'i7', 'i7a', 'i8', 'i9', 'i9a', 'i9b', 'p3', 'i10', 'i11', 'i12', 'i13', 'i14', 'p4', 'i15']
+
+
+''' Flask Presets '''
+
+template = '''
+<html>
+    <head> 
+        <title>SEC Insight</title> 
+    </head>
+    <body>
+        <h1>Form-10K Insight Guru</h1>
+        <p><em>Enter the company ticker and year to select the filing to process. </em></p>
+        <form method="post" action=".">
+            <label for="ticker">Ticker:</label>
+            <input class="text" type="text" name="ticker" id="ticker" placeholder="ex. META">
+            <label for="year">Year:</label>
+            <input class="text" type="text" name="year"  id="year" placeholder="ex. 2023">
+            <input type="submit" name="select_filing" value="Run">
+        </form>
+        {errors}
+        <br>
+        <br>
+        <br>
+        <br>
+        
+        <h3>{company} {year}</h3>
+        <br> 
+        <div><div>{insights}</div></div>
+    </body>
+</html>
+<style>
+    input.text{{width: 5em}}
+</style>
+'''
