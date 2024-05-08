@@ -3,6 +3,9 @@
 ## Submission Information
 Apologies for the late submission. Had 4 finals, move-out, and 24hr worth of flight travel within the past 12 days starting the day this assignment was released.
 
+Originally planned to run on AWS Beanstalk but could not manage to configurate it in time. I am not a webdev so have little experience on that end.  There was continuous issues with deployment of the Flask app. To see it working, I made a [video](https://drive.google.com/file/d/1QyPPKGQIIrUCC4gCDNBddxX6NA67gvJK/view?usp=sharing).
+
+
 ## Technical Details
 
 ### Technical Summary
@@ -10,8 +13,8 @@ Apologies for the late submission. Had 4 finals, move-out, and 24hr worth of fli
 - sec_edgar_downloader
 - BeautifulSoup
 - Google Gemini 1.1.0 Pro API
-- Flask (currently can run locally with Flask `python src/application.py`)
-- AWS Beanstalk (in progress, use local run above in meantime)
+- Flask (currently can run locally with Flask `python application.py`)
+- ~~AWS Beanstalk (in progress, use local run above in meantime)~~ 
 - (no frontend framework)
 
 ### Insights
@@ -25,11 +28,13 @@ Apologies for the late submission. Had 4 finals, move-out, and 24hr worth of fli
         - Balance Sheet
         - Income Statement
         - Cash Flow
-- Risks (Item 1A)
-    - Assesses the risks of the company
-        - This is chosen as it is a valuable insight to detect if something is wrong. While the vast majority of the risks  are generally relatively boilerplate (in most times even all the risks mentioned), unusual risks are one of the earliest signs of red flags and can easily be the most important element of the whole form.
+-
 - Potential Future Insights
-    - These are some developed or proposed insights to process int he future that was not implemented due to token restrictions that comes along with free API's
+    - These are some developed or proposed insights to process int he future that was not implemented due to restrictions that comes along with free API's rate limits
+        -  Risks (Item 1A)
+            - Assesses the risks of the company
+                - This is chosen as it is a valuable insight to detect if something is wrong. While the vast majority of the risks  are generally relatively boilerplate (in most times even all the risks mentioned), unusual risks are one of the earliest signs of red flags and can easily be the most important element of the whole form.
+            - not used because exceeded rate limits
         - Managements Discussion and Analysis (Item 7)
         - Technnological industry sustainability (Item 1)
 
