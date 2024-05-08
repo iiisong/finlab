@@ -2,7 +2,7 @@ import bs4 # for typing-use
 from bs4 import BeautifulSoup
 import re
 
-from presets import ascii_replace_dict, id_to_section_label, id_to_section_title, id_to_section_alts
+from src.presets import ascii_replace_dict, id_to_section_label, id_to_section_title, id_to_section_alts
 
 class Form10KText():
     '''

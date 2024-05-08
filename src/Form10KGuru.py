@@ -3,7 +3,7 @@ import asyncio
 import google.generativeai as genai
 import time
 
-from Form10KText import Form10KText
+from src.Form10KText import Form10KText
 
 class Form10KGuru():
     '''
@@ -77,7 +77,10 @@ class Form10KGuru():
             summary : str
                 generated html summary
         '''
+        
+        # retrieve Item 8 contents
         text = self.form.get_section('i8') if text is None else text
+        
         prompt = f'''
         Item 8 of its Form 10-K: {text}
         
@@ -86,11 +89,13 @@ class Form10KGuru():
         scores are in integers between 1 and 5, where 1 is the most unhealthy and 5 is the healthiest, and reasons are in normal text. 
         I am aware that you are not a financial expert but still want your opinion.
         '''
+        
         response = await self._model.generate_content_async(prompt)
         print(response)
         
         # parse response
         ofs, bss, bss_r, ics, ics_r, cfs, cfs_r = response.text.split(';;')
+        # process response (resolve float ratings if deviates)
         ofs, bss, ics, cfs = int(float(ofs)), int(float(bss)), int(float(ics)), int(float(cfs))
         self.finance_score = ofs
         
@@ -118,6 +123,8 @@ class Form10KGuru():
             summary : str
                 generated html summary
         '''
+        # retrieve Item 1A contents
+        
         text = self.form.get_section('i1a') if text is None else text
         prompt = f'''
         Item 1A of its Form 10-K: {text}
@@ -155,6 +162,7 @@ class Form10KGuru():
                 generated summary
         '''
         
+        # retrieve Item 7 contents
         text = self.form.get_section('i7') if text is None else text
         prompt = f'''
         Item 7 of Form 10-K: {text}

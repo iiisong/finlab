@@ -2,7 +2,7 @@ from sec_edgar_downloader import Downloader
 import os
 import re
 
-from presets import preload_list
+from src.presets import preload_list
 
 class Form10KLoader():
     '''
@@ -33,7 +33,7 @@ class Form10KLoader():
         #   non-loaded ticker symbol not in dict
         # self.loaded = {}
         self.loaded = {'META': {-1}, 
-                       'AAPL': {2017}, 
+                       'AAPL': {2017, 2020}, 
                        'LUMN': {2022}, 
                        'GWW': {2014}}
         

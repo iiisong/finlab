@@ -25,7 +25,7 @@ Apologies for the late submission. Had 4 finals, move-out, and 24hr worth of fli
         - Balance Sheet
         - Income Statement
         - Cash Flow
-- Risks
+- Risks (Item 1A)
     - Assesses the risks of the company
         - This is chosen as it is a valuable insight to detect if something is wrong. While the vast majority of the risks  are generally relatively boilerplate (in most times even all the risks mentioned), unusual risks are one of the earliest signs of red flags and can easily be the most important element of the whole form.
 - Potential Future Insights
@@ -64,9 +64,16 @@ As this stage takes advantage of table-of-contents linking, it is by far the mos
 #### `Form10KGuru`
 This class is responsible with the main processing of the text and generation fo the insight. Powered through *Google Gemini Pro*, this stage generates various valuable insights. As multiple insights requires multiple queries, each of which is very slow, we take advantage of asyncronous functions to have mutliple Gemini queries running in parallel. 
 
-Each query takes advantage of some basic Retrieval Augmented Generation (RAG) and prompt engineering to provide the necessary textual information from the Form and to set up the response for easier parsing respectively.
+Each query takes advantage of some basic Retrieval Augmented Generation (RAG) and prompt engineering to provide the necessary textual information from the Form and to set up the response for easier parsing respectively. 
+
+As this step requires the non-deterministic LLM's, this step is the main source of errors and inconsistencies. 
+Such errors include:
+-  Error 500: Internal System Failure. This is currently one of larger sources of inconsistencies. It is unsure where the error is located. Current speculation is that it is caused by exceeding the token per minute restriction from the server though it is a bit unclear as it sometimes errors more than 1 minute apart. Spacing requests 1.5-2 minutes apart seems to aleviate most of the issues.
+- Parsing issues. Although some prompt engineering is done to encourage output string in a specific parseable manner, the nature of non-deterministic functions will still occasionally generate outputs that fail to confine to the specified format and break when attempted to parse
 
 --- 
 
 #### `application.py`
 The last step of the pipeline is a simple bare-bones Flask webapp hosted on AWS Elastic Beanstalk without any frontend framework. Flask was chosen because of its easy integration with python which the rest of the code is written in. No front-end framework was used because of time-constraints and because of my relative experience working with backend-supported webapps. AWS Elastic Beanstalk was used because of its versatility and ease of deployment though that could be disputed. No buckets are used so any download request is downloaded on the server directly. This is another area of improvement.
+
+This step is the main source of development currently as AWS has been breaking constantly and is still stuck in debugging.

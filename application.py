@@ -1,11 +1,11 @@
 from flask import Flask, request
 import asyncio
 
-from Form10KLoader import Form10KLoader
-from Form10KText import Form10KText
-from Form10KGuru import Form10KGuru
+from src.Form10KLoader import Form10KLoader
+from src.Form10KText import Form10KText
+from src.Form10KGuru import Form10KGuru
 
-from presets import template
+from src.presets import template
 
 form = None
 guru = None
